@@ -116,6 +116,8 @@ def build_values_cte(df, cte_name: str) -> str:
     Returns: WITH <cte_name> AS (SELECT * FROM (VALUES ...) AS _t(col1, col2))
     """
     import math
+    import datetime
+    import decimal
     cols     = list(df.columns)
     col_list = ', '.join(f'[{c}]' for c in cols)
 
@@ -129,8 +131,12 @@ def build_values_cte(df, cte_name: str) -> str:
                 vals.append('NULL')
             elif isinstance(v, str):
                 vals.append("'" + v.replace("'", "''") + "'")
-            else:
+            elif isinstance(v, (datetime.datetime, datetime.date)):
+                vals.append("'" + str(v) + "'")
+            elif isinstance(v, (int, float, decimal.Decimal)):
                 vals.append(str(v))
+            else:
+                vals.append("'" + str(v).replace("'", "''") + "'")
         rows.append('(' + ', '.join(vals) + ')')
 
     if not rows:

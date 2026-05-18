@@ -1,9 +1,9 @@
 @echo off
 REM Warehouse Diagnostic Tool Launcher
 REM Checks setup steps and activates virtual environment
-
+ 
 setlocal enabledelayedexpansion
-
+ 
 REM Check if WDT directory exists
 if not exist "C:\Users\%USERNAME%\Workspace\WDT" (
     echo.
@@ -19,10 +19,20 @@ if not exist "C:\Users\%USERNAME%\Workspace\WDT" (
         exit /b 1
     )
 )
-
+ 
 REM Navigate to the WDT directory using %USERNAME%
 cd /d "C:\Users\%USERNAME%\Workspace\WDT"
-
+ 
+REM Pull latest changes from remote
+echo.
+echo Checking for updates...
+echo.
+git pull
+if errorlevel 1 (
+    echo Warning: Could not pull latest updates. Continuing with existing version.
+    echo Please ensure Git is installed and you have internet access.
+)
+ 
 REM Check if Requirements.txt exists
 if not exist "Requirements.txt" (
     echo Error: Requirements.txt not found.
@@ -30,7 +40,7 @@ if not exist "Requirements.txt" (
     pause
     exit /b 1
 )
-
+ 
 REM Check if virtual environment exists
 if not exist ".venv\Scripts\activate.bat" (
     echo.
@@ -44,7 +54,7 @@ if not exist ".venv\Scripts\activate.bat" (
         exit /b 1
     )
 )
-
+ 
 REM Activate the virtual environment
 call .venv\Scripts\activate.bat
 if errorlevel 1 (
@@ -52,7 +62,7 @@ if errorlevel 1 (
     pause
     exit /b 1
 )
-
+ 
 REM Install/update dependencies
 echo.
 echo Installing/updating dependencies from Requirements.txt...
@@ -63,11 +73,11 @@ if errorlevel 1 (
     pause
     exit /b 1
 )
-
+ 
 REM Run the application
 echo.
 echo Launching Warehouse Diagnostic Tool...
 echo.
 python warehouse_diagnostics.py
-
+ 
 endlocal

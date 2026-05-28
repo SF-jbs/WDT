@@ -14,6 +14,7 @@ import tkinter as tk
 from tkinter import messagebox
 import threading
 import inspect
+from version_check import check_for_update
 
 from common import (
     PALETTE, FONT_MONO, FONT_SMALL, FONT_TITLE, FONT_HEAD,
@@ -433,6 +434,9 @@ class WarehouseDiagnosticsApp(tk.Tk):
         self._open_frames   = {}
         self._sidebar_btns  = {}   # ScenarioClass → button widget
         self._build_ui()
+        check_for_update(
+            on_update_available=lambda: self.after(0, self._notify_update)
+        )
 
     def _build_ui(self):
         # ── Top bar ───────────────────────────────────────────────────────────
